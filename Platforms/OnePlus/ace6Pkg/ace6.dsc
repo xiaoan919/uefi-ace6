@@ -65,6 +65,17 @@
   gSiliciumPkgTokenSpaceGuid.PcdFrameBufferColorDepth|32
 
   #
+  # Boot Manager
+  #
+  # The default timeout is a few seconds, which is too short to read the screen
+  # on the first bring-up: the panel shows the Project Silicium banner and the
+  # menu frame, then the platform resets before anything can be inspected or a
+  # key can be pressed. 60 s keeps the front page up long enough to photograph
+  # and to navigate with the volume keys.
+  #
+  gEfiMdePkgTokenSpaceGuid.PcdPlatformBootTimeOut|60
+
+  #
   # Platform PEI
   #
   gQcomPkgTokenSpaceGuid.PcdPlatformType|"LA"
