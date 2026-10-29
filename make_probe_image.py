@@ -34,6 +34,7 @@ SHIM_DIR = REPO / "BootShim"
 
 FB_BASE = 0xFC800000
 FB_FILL = 0x100000   # 1 MiB, well inside the 43 MiB splash region
+FB_MARK2_OFFSET = 0x600000   # second band, ~1/3 down a 1272x2800x4 buffer
 
 PSCI_SYSTEM_RESET = 0x84000009
 
@@ -120,6 +121,20 @@ _CopyLoop:
   b.ne  _CopyLoop
   ldr   x5, =FD_BASE
 
+  /* Mark 2: the FD copy completed. Painted further down the panel so the
+     stage is readable from the screen alone:
+       one band then reset   the copy itself faulted
+       two bands then reset  the copy finished, the FD entry faulted
+       two bands then blank  SEC ran and cleared Display_Reserved */
+  ldr   x0, =(FB_BASE + FB_MARK2_OFFSET)
+  ldr   x2, =FB_FILL
+  mov   x3, #-1
+_Mark2:
+  stp   x3, x3, [x0], #16
+  subs  x2, x2, #16
+  b.ne  _Mark2
+  dsb   sy
+
 _Entry:
   /* Publish the copied instructions before executing them. */
   dsb   sy
@@ -204,6 +219,7 @@ def main():
         f"-DFD_SIZE={args.fd_size}",
         f"-DFB_BASE={FB_BASE:#x}",
         f"-DFB_FILL={FB_FILL:#x}",
+        f"-DFB_MARK2_OFFSET={FB_MARK2_OFFSET:#x}",
         f"-DPROBE_RESET={args.reset}",
         f"-DPROBE_DELAY_S={args.delay}",
     ]
