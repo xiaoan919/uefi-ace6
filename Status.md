@@ -865,6 +865,34 @@
 </td></tr>
 </table>
 </details>
+## OnePlus Ace 6
+
+**State:** Active <br>
+**Codename:** ace6
+
+**Contributors:** [xiaoan919](https://github.com/xiaoan919/)
+
+### UEFI Status
+
+| Feature            | Description | State |
+|:-------------------|:-------------|:-----:|
+| Display            |              | ❔    |
+| Internal Storage   |              | ❔    |
+| Side Buttons       |              | ❔    |
+| USB Host Mode      |              | ❔    |
+| USB Device Mode    |              | ❔    |
+| USB Power Delivery |              | ❔    |
+| Mass Storage       |              | ❔    |
+| Windows Boot       |              | ❌    |
+| Linux Boot         |              | ❌    |
+
+> [!NOTE]
+> Derived from paganiPkg (OnePlus 13s). The DXE heap extent, framebuffer
+> geometry and SMBIOS identity are corrected for this board (1272x2800,
+> board 24851). Nothing has been booted on hardware yet.
+
+---
+
 
 ---
 
