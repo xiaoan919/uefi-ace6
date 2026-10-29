@@ -41,11 +41,23 @@ jobs:
         run: |
           FD=$(find Build/ace6Pkg -name 'SILICIUM_UEFI.fd' | head -1)
           if [ -z "$FD" ]; then echo "no FD, skipping probe"; exit 0; fi
+          # probe: paint the marker, wait, then PSCI reset. Proven on hardware:
+          # a white band appears on the panel and the phone reboots by itself.
           python3 ./make_probe_image.py \
             --fd "$FD" \
             --dtb Resources/DTBs/ace6.dtb \
             --out Mu-ace6-probe.img \
             --reset 1 --delay 10
+
+          # chain: paint the same marker, then fall through to the stock
+          # behaviour -- copy the FD to FD_BASE and branch into it. If the band
+          # stays and nothing else happens, the fault is at or after the FD
+          # entry; if the band vanishes, SEC ran and cleared Display_Reserved.
+          python3 ./make_probe_image.py \
+            --fd "$FD" \
+            --dtb Resources/DTBs/ace6.dtb \
+            --out Mu-ace6-chain.img \
+            --reset 0
 
       - name: Show what was produced
         if: always()
