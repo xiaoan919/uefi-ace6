@@ -1,0 +1,53 @@
+name: Build ace6Pkg
+
+# The upstream active_devices workflow builds every device listed Active in
+# Status.md, which is around eighty targets. This one builds only the Ace 6 so
+# a failure points at this port instead of a pile of unrelated boards.
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_mode:
+        description: "DEBUG or RELEASE"
+        type: choice
+        options: ["DEBUG", "RELEASE"]
+        default: DEBUG
+
+env:
+  CI_BUILD: true
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install host packages
+        run: bash ./setup_env.sh -p apt
+
+      - name: Build ace6Pkg
+        run: |
+          python3 ./build_uefi.py -d ace6 -r "${{ inputs.build_mode }}" -c -m 0
+
+      - name: Show what was produced
+        if: always()
+        run: |
+          echo "=== Mu-* ==="
+          ls -la Mu-* 2>/dev/null || echo "(none)"
+          echo "=== firmware volumes ==="
+          find . -name '*.fd' -o -name '*.FD' 2>/dev/null | head -20
+
+      - name: Upload UEFI image
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ace6-uefi-${{ github.run_number }}
+          path: |
+            Mu-*
+            Build/ace6Pkg/**/*.fd
+            Build/ace6Pkg/**/*.FD
+          if-no-files-found: warn
+          retention-days: 7
