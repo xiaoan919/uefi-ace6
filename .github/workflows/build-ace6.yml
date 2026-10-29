@@ -32,6 +32,21 @@ jobs:
         run: |
           python3 ./build_uefi.py -d ace6 -r "${{ inputs.build_mode }}" -c -m 0
 
+      # The stock image gives no feedback when it fails: BootShim copies the FD
+      # and jumps, so a fault there resets the phone before anything can log.
+      # This variant paints the splash framebuffer and reboots on purpose, which
+      # turns "did our code run" into something visible on the panel.
+      - name: Build the diagnostic probe image
+        if: always()
+        run: |
+          FD=$(find Build/ace6Pkg -name 'SILICIUM_UEFI.fd' | head -1)
+          if [ -z "$FD" ]; then echo "no FD, skipping probe"; exit 0; fi
+          python3 ./make_probe_image.py \
+            --fd "$FD" \
+            --dtb Resources/DTBs/ace6.dtb \
+            --out Mu-ace6-probe.img \
+            --reset 1 --delay 10
+
       - name: Show what was produced
         if: always()
         run: |
