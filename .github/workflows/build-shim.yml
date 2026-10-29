@@ -1,0 +1,57 @@
+name: Build shim images
+
+# Only the 200-byte BootShim changes when iterating on the bring-up path; the
+# 3 MB firmware volume does not. Firmware/SILICIUM_UEFI.fd is committed so this
+# takes about forty seconds instead of re-fetching every submodule and building
+# all of EDK2 again.
+#
+# Use build-ace6.yml when the firmware itself changes.
+
+on:
+  workflow_dispatch:
+    inputs:
+      delay:
+        description: "seconds the reset probe holds the marker"
+        default: "10"
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show toolchain
+        run: |
+          export PATH=/usr/lib/llvm-18/bin:$PATH
+          clang --version | head -1
+          llvm-objcopy --version | head -1
+          llvm-objdump --version | head -1
+
+      - name: Build the two diagnostic images
+        run: |
+          export PATH=/usr/lib/llvm-18/bin:$PATH
+          FD=Firmware/SILICIUM_UEFI.fd
+          DTB=Resources/DTBs/ace6.dtb
+          ls -l "$FD" "$DTB"
+
+          # reset probe: paint, wait, PSCI reset. Proven to execute on hardware.
+          python3 ./make_probe_image.py --fd "$FD" --dtb "$DTB" \
+            --out Mu-ace6-probe.img --reset 1 --delay "${{ inputs.delay }}"
+
+          # chain: paint band 1, copy the FD, paint band 2, branch into it.
+          python3 ./make_probe_image.py --fd "$FD" --dtb "$DTB" \
+            --out Mu-ace6-chain.img --reset 0
+
+      - name: Report
+        if: always()
+        run: ls -l Mu-ace6-*.img 2>/dev/null || echo "(none)"
+
+      - name: Upload
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ace6-shim-${{ github.run_number }}
+          path: Mu-ace6-*.img
+          if-no-files-found: warn
+          retention-days: 7
