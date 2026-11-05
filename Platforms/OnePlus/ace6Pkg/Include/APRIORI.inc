@@ -15,6 +15,12 @@ APRIORI DXE {
   INF EmbeddedPkg/MetronomeDxe/MetronomeDxe.inf
   INF ArmPkg/Drivers/TimerDxe/TimerDxe.inf
 
+#
+# The vendor block, gated as a whole. The unit showed EnvDxeEnhanced asserting
+# in SerialDxe.c:849 and XhciDxe asserting in Autogen.c:284; they form one
+# dependency graph, so partial gating only relocates the failure.
+#
+!if $(ACE6_VENDOR_HW) == 1
   INF Binaries/pagani/QcomPkg/Drivers/SmemDxe/SmemDxe.inf
   INF Binaries/pagani/QcomPkg/Drivers/DALSYSDxe/DALSYSDxe.inf
   INF Binaries/pagani/QcomPkg/Drivers/HWIODxe/HWIODxe.inf
@@ -38,24 +44,32 @@ APRIORI DXE {
   INF Binaries/pagani/QcomPkg/Drivers/QupDxe/QupDxe.inf
   INF Binaries/pagani/QcomPkg/Drivers/I2CDxe/I2CDxe.inf
   INF Binaries/pagani/QcomPkg/Drivers/SPMIDxe/SPMIDxe.inf
+!endif
 
   INF MdeModulePkg/Universal/ResetSystemRuntimeDxe/ResetSystemRuntimeDxe.inf
 
+!if $(ACE6_VENDOR_HW) == 1
   INF Binaries/pagani/QcomPkg/Drivers/PmicDxe/PmicDxeLa.inf
-  INF Binaries/pagani/MdeModulePkg/Universal/Disk/DiskIoDxe/DiskIoDxe.inf
-  INF Binaries/pagani/MdeModulePkg/Universal/Disk/PartitionDxe/PartitionDxe.inf
+!endif
 
+  INF MdeModulePkg/Universal/Disk/DiskIoDxe/DiskIoDxe.inf
+  INF MdeModulePkg/Universal/Disk/PartitionDxe/PartitionDxe.inf
   INF MdeModulePkg/Universal/Disk/UnicodeCollation/EnglishDxe/EnglishDxe.inf
 
+!if $(ACE6_VENDOR_HW) == 1
   INF Binaries/pagani/QcomPkg/Drivers/SdccDxe/SdccDxe.inf
   INF Binaries/pagani/QcomPkg/Drivers/UFSDxe/UFSDxe.inf
+!endif
 
   INF FatPkg/EnhancedFatDxe/Fat.inf
 
+!if $(ACE6_VENDOR_HW) == 1
   INF Binaries/pagani/QcomPkg/Drivers/TzDxe/TzDxeLA.inf
+!endif
 
   INF MdeModulePkg/Universal/Variable/RuntimeDxe/VariableRuntimeDxe.inf
 
+!if $(ACE6_VENDOR_HW) == 1
   INF Binaries/pagani/QcomPkg/Drivers/DDRInfoDxe/DDRInfoDxe.inf
   INF Binaries/pagani/QcomPkg/Drivers/OcdtDxe/OplusProject.inf
   INF Binaries/pagani/QcomPkg/Drivers/TsensDxe/TsensDxe.inf
@@ -64,6 +78,7 @@ APRIORI DXE {
   INF Binaries/pagani/QcomPkg/Drivers/PILDxe/PILDxe.inf
   INF Binaries/pagani/QcomPkg/Drivers/SPSSDxe/SPSSDxe.inf
   INF Binaries/pagani/QcomPkg/Drivers/GLinkDxe/GLinkDxe.inf
+!endif
 
   INF MdeModulePkg/Universal/WatchdogTimerDxe/WatchdogTimer.inf
   INF MdeModulePkg/Universal/SecurityStubDxe/SecurityStubDxe.inf
@@ -75,6 +90,15 @@ APRIORI DXE {
   INF MdeModulePkg/Universal/HiiDatabaseDxe/HiiDatabaseDxe.inf
   INF MdeModulePkg/Universal/BdsDxe/BdsDxe.inf
 
+#
+# The loader chain: menu, boot option registration, payload volume, XNU handoff.
+#
+  INF UniXNUPkg/Application/UniXNU/UniXNU.inf
+  INF UniXNUPkg/Driver/UniXNUDxe/UniXNUDxe.inf
+  INF UniXNUPkg/Driver/UniXNURamDiskDxe/UniXNURamDiskDxe.inf
+  INF DarwinBootPkg/Driver/DarwinBoot.inf
+
+!if $(ACE6_VENDOR_HW) == 1
   INF Binaries/pagani/QcomPkg/Drivers/SPIDxe/SPIDxe.inf
   INF Binaries/pagani/QcomPkg/Drivers/PmicGlinkDxe/PmicGlinkDxe.inf
   INF Binaries/pagani/QcomPkg/Drivers/UsbPwrCtrlDxe/UsbPwrCtrlDxe.inf
@@ -83,33 +107,40 @@ APRIORI DXE {
   INF Binaries/pagani/QcomPkg/Drivers/UsbfnDwc3Dxe/UsbfnDwc3Dxe.inf
   INF Binaries/pagani/QcomPkg/Drivers/XhciPciEmulationDxe/XhciPciEmulationDxe.inf
   INF Binaries/pagani/QcomPkg/Drivers/XhciDxe/XhciDxe.inf
+!endif
 
   INF MdeModulePkg/Bus/Usb/UsbBusDxe/UsbBusDxe.inf
   INF MdeModulePkg/Bus/Usb/UsbKbDxe/UsbKbDxe.inf
   INF MdeModulePkg/Bus/Usb/UsbMassStorageDxe/UsbMassStorageDxe.inf
 
+!if $(ACE6_VENDOR_HW) == 1
   INF Binaries/pagani/QcomPkg/Drivers/UsbMsdDxe/UsbMsdDxe.inf
   INF Binaries/pagani/QcomPkg/Drivers/UsbDeviceDxe/UsbDeviceDxe.inf
   INF Binaries/pagani/QcomPkg/Drivers/UsbConfigDxe/UsbConfigDxe.inf
   INF Binaries/pagani/QcomPkg/Drivers/ButtonsDxe/ButtonsDxe.inf
+!endif
 
 !if $(USE_CUSTOM_DISPLAY_DRIVER) == 1
+!if $(ACE6_VENDOR_HW) == 1
   INF Binaries/pagani/QcomPkg/Drivers/DisplayDxe/DisplayDxe.inf
+!endif
 !else
   INF SiliciumPkg/Drivers/SimpleFbDxe/SimpleFbDxe.inf
 !endif
 
-!if $(USE_CUSTOM_DISPLAY_DRIVER) == 1
+!if $(ACE6_VENDOR_HW) == 1
   INF Binaries/pagani/QcomPkg/Drivers/CPRDxe/CPRDxe.inf
-!endif
   INF Binaries/pagani/QcomPkg/Drivers/GpiDxe/GpiDxe.inf
   INF Binaries/pagani/QcomPkg/Drivers/UCDxe/UCDxe.inf
   INF Binaries/pagani/QcomPkg/Drivers/RNGDxe/RngDxe.inf
+!endif
 
   INF EmbeddedPkg/SimpleTextInOutSerial/SimpleTextInOutSerial.inf
   INF MdeModulePkg/Universal/Console/ConPlatformDxe/ConPlatformDxe.inf
   INF MdeModulePkg/Universal/Console/ConSplitterDxe/ConSplitterDxe.inf
   INF MdeModulePkg/Universal/Console/GraphicsConsoleDxe/GraphicsConsoleDxe.inf
 
+!if $(ACE6_VENDOR_HW) == 1
   INF Binaries/pagani/QcomPkg/Drivers/RscDxe/RscDxe.inf
+!endif
 }
