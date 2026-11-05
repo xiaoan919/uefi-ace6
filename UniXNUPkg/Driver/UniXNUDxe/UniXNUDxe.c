@@ -156,8 +156,11 @@ UniXNUDxeEntry (
   UINTN                     ExistingSize;
   BOOLEAN                   Found;
 
+  DEBUG ((DEBUG_ERROR, "UNIXNUDXE: entry, registering the UniXNU boot option\n"));
+
   Path = FindApplication (ImageHandle);
   if (Path == NULL) {
+    DEBUG ((DEBUG_ERROR, "UNIXNUDXE: the UniXNU application file is not in this volume\n"));
     DEBUG ((DEBUG_ERROR, "UniXNUDxe: application %g not found in any FV\n", PcdGetPtr (PcdUniXNUApplicationFile)));
     return EFI_NOT_FOUND;
   }

@@ -52,4 +52,15 @@
   gUniXNUPkgTokenSpaceGuid.PcdUniXNUApplicationFile
 
 [Depex]
-  gEfiVariableArchProtocolGuid AND gEfiVariableWriteArchProtocolGuid
+  #
+  # TRUE while the boot chain is being brought up. The original expression waits
+  # for the variable arch and variable write arch protocols, which come from
+  # VariableRuntimeDxe. On the unit the platform stops after RamManagerDxe with
+  # the last DXE line still on the panel and never reaches BDS, which is exactly
+  # what an unsatisfied Depex looks like from the outside. Running unconditionally
+  # says whether this driver is the one holding the dispatch loop.
+  #
+  # Restore gEfiVariableArchProtocolGuid AND gEfiVariableWriteArchProtocolGuid
+  # once the menu appears.
+  #
+  TRUE
