@@ -213,8 +213,8 @@ PlatformBootManagerUnableToBoot ()
     Print (L"No Operating System Found! Please make sure that an OS is Installed.\n");
   }
 
-  // Wait 10s
-  gBS->Stall (10000000);
+  // Wait 60s: 10 s is too short to read the panel on first bring-up
+  gBS->Stall (60000000);
 
   // Shutdown
   gRT->ResetSystem (EfiResetShutdown, EFI_SUCCESS, 0, NULL);
