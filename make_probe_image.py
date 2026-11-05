@@ -194,8 +194,14 @@ def main():
     ap.add_argument("--clang", default="clang")
     ap.add_argument("--objcopy", default="llvm-objcopy")
     ap.add_argument("--objdump", default="llvm-objdump")
-    ap.add_argument("--fd-base", default="0xa7100000")
-    ap.add_argument("--fd-size", default="0x300000")
+    # Base and size come from Resources/Configs/<device>.toml so the shim and the
+    # firmware volume cannot disagree. The stock uefi partition of this board is
+    # an ELF whose single LOAD segment sits at 0xA7000000 and is 0x2A8000 long,
+    # which is where the ABL puts it; the published SM8750 platforms use
+    # 0xA7100000 with a reserved megabyte below, and this board does not.
+    ap.add_argument("--device-config", default="Resources/Configs/ace6.toml")
+    ap.add_argument("--fd-base", default=None)
+    ap.add_argument("--fd-size", default=None)
     args = ap.parse_args()
 
     fd = Path(args.fd)
@@ -212,6 +218,23 @@ def main():
 
     src.write_text(SHIM_SOURCE, encoding="ascii")
     print(f"  wrote {src} ({len(SHIM_SOURCE)} chars)", flush=True)
+
+    # Resolve the flash-descriptor window. The device configuration is the one
+    # source of truth: build_uefi.py compiles BootShim.S from the same numbers,
+    # so reading them here keeps the shim and the volume in agreement.
+    if args.fd_base is None or args.fd_size is None:
+        cfg_path = Path(args.device_config)
+        if not cfg_path.is_file():
+            print(f"  MISSING device config {cfg_path}")
+            return 1
+        import tomllib
+        uefi_fd_cfg = tomllib.loads(cfg_path.read_text(encoding="utf-8"))["uefi_fd"]
+        if args.fd_base is None:
+            args.fd_base = hex(uefi_fd_cfg["base"])
+        if args.fd_size is None:
+            args.fd_size = hex(uefi_fd_cfg["size"])
+        print(f"  window from {cfg_path}: base={args.fd_base} size={args.fd_size}",
+              flush=True)
 
     defs = [
         "-DREQUIRES_KERNEL_HEADER=1",
