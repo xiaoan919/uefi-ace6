@@ -104,8 +104,8 @@ READ_LOCK_STATUS   = TRUE
   #INF MdeModulePkg/Universal/Acpi/AcpiPlatformDxe/AcpiPlatformDxe.inf
   #INF RuleOverride = ACPITABLE pagani/AcpiTables.inf
 
-  # IORT DT
-  INF QcomPkg/Drivers/IortDtDxe/IortDtDxe.inf
+  # IORT DT is listed in Include/APRIORI.inc, which this volume includes
+  # below; listing it here as well would put its GUID in the volume twice.
 
   # Device Tree
   #INF EmbeddedPkg/Drivers/DtPlatformDxe/DtPlatformDxe.inf
@@ -118,14 +118,13 @@ READ_LOCK_STATUS   = TRUE
   # the volume, and a module that is compiled but not listed here is simply
   # absent at runtime.
   #
-  # DiskIoDxe and Fat are deliberately not listed here: DXE.inc already pulls
-  # them in. Adding them again put two files with the same GUID in the volume
-  # and GenFv refused with "the 32th file and 94th file have the same file
-  # GUID". They are still what makes the payload visible as a file system.
+  # GenFv refuses a volume that carries one file GUID twice, so each module is
+  # listed in exactly one place. The split follows sheng: this file carries the
+  # application and its registration driver, DXE.inc carries the ram disk and
+  # the kernel loader, and APRIORI.inc carries neither. DiskIoDxe and Fat come
+  # from DXE.inc as well.
   INF UniXNUPkg/Application/UniXNU/UniXNU.inf
   INF UniXNUPkg/Driver/UniXNUDxe/UniXNUDxe.inf
-  INF UniXNUPkg/Driver/UniXNURamDiskDxe/UniXNURamDiskDxe.inf
-  INF DarwinBootPkg/Driver/DarwinBoot.inf
 
   !include QcomPkg/Extra.fdf.inc
 

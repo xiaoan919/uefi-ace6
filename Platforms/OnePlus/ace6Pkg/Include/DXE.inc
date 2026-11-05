@@ -60,8 +60,6 @@
 # first is what turns a driver failure into something on the panel, the second
 # is what every console and file-system driver needs to describe itself.
 #
-  INF UniXNUPkg/Application/UniXNU/UniXNU.inf
-  INF UniXNUPkg/Driver/UniXNUDxe/UniXNUDxe.inf
   INF UniXNUPkg/Driver/UniXNURamDiskDxe/UniXNURamDiskDxe.inf
   INF DarwinBootPkg/Driver/DarwinBoot.inf
 

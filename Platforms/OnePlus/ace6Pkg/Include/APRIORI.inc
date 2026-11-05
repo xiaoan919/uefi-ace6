@@ -90,13 +90,6 @@ APRIORI DXE {
   INF MdeModulePkg/Universal/HiiDatabaseDxe/HiiDatabaseDxe.inf
   INF MdeModulePkg/Universal/BdsDxe/BdsDxe.inf
 
-#
-# The loader chain: menu, boot option registration, payload volume, XNU handoff.
-#
-  INF UniXNUPkg/Application/UniXNU/UniXNU.inf
-  INF UniXNUPkg/Driver/UniXNUDxe/UniXNUDxe.inf
-  INF UniXNUPkg/Driver/UniXNURamDiskDxe/UniXNURamDiskDxe.inf
-  INF DarwinBootPkg/Driver/DarwinBoot.inf
 
 !if $(ACE6_VENDOR_HW) == 1
   INF Binaries/pagani/QcomPkg/Drivers/SPIDxe/SPIDxe.inf
