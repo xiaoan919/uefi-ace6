@@ -39,6 +39,13 @@
   ACE6_VENDOR_HW                 = 0
 
   #
+  # 1 = include SmbiosDxe and SmBiosTableDxe.
+  # SmbiosDxe asserts on the unit before it publishes its protocol, and the
+  # loader does not need SMBIOS, so it stays off until the boot chain works.
+  #
+  ACE6_SMBIOS                    = 0
+
+  #
   # 0 = SM8750-AB
   # 1 = SM8750-3-AB
   # 2 = SM8750-AC

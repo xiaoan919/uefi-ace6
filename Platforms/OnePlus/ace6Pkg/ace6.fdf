@@ -87,8 +87,17 @@ READ_LOCK_STATUS   = TRUE
   INF SiliciumPkg/Drivers/RamManagerDxe/RamManagerDxe.inf
 
   # SmBios
+  #
+  # Off for now. On the unit SmbiosDxe is the first driver that stops the boot:
+  # it loads, then ASSERT_RETURN_ERROR (Status = Not Found) from LocateDevicePath
+  # in its generated code, before SmBiosTableDxe can publish the protocol.
+  # The loader does not consume SMBIOS at all -- UniXNULib asks for Graphics
+  # Output, BlockIo, SimpleFileSystem and SimpleTextIn -- so this can wait until
+  # the boot chain works and the missing device path can be diagnosed calmly.
+  !if $(ACE6_SMBIOS) == 1
   INF MdeModulePkg/Universal/SmbiosDxe/SmbiosDxe.inf
   INF SiliciumPkg/Drivers/SmBiosTableDxe/SmBiosTableDxe.inf
+  !endif
 
   # ACPI
   #INF MdeModulePkg/Universal/Acpi/AcpiTableDxe/AcpiTableDxe.inf
