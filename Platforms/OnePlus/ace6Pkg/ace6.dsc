@@ -28,6 +28,17 @@
   USE_CUSTOM_DISPLAY_DRIVER      = 0
 
   #
+  # 0 = Mu drivers only. The previous stage's display keeps scanning out, so the
+  #     boot manager is visible without any vendor hardware driver.
+  # 1 = also load the stock vendor drivers (SMEM, clocks, RPMH, UFS, USB, ...).
+  #
+  # The on-unit log shows the vendor EnvDxeEnhanced.efi loading and then
+  # ASSERTing in SerialDxe.c:849 with RETURN_ERROR, which stops the boot before
+  # the menu. sheng defaults this to 0 for the same reason.
+  #
+  ACE6_VENDOR_HW                 = 0
+
+  #
   # 0 = SM8750-AB
   # 1 = SM8750-3-AB
   # 2 = SM8750-AC

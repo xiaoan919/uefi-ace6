@@ -1,7 +1,9 @@
   INF MdeModulePkg/Core/Dxe/DxeMain.inf
   INF MdeModulePkg/Universal/PCD/Dxe/Pcd.inf
 
+  !if $(ACE6_VENDOR_HW) == 1
   INF Binaries/pagani/QcomPkg/Drivers/EnvDxe/EnvDxeEnhanced.inf
+!endif
 
   INF MdeModulePkg/Universal/ReportStatusCodeRouter/RuntimeDxe/ReportStatusCodeRouterRuntimeDxe.inf
   INF MdeModulePkg/Universal/StatusCodeHandler/RuntimeDxe/StatusCodeHandlerRuntimeDxe.inf
