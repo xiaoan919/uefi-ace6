@@ -91,8 +91,32 @@
   #
   ConfigurationMapLib|ace6Pkg/Library/ConfigurationMapLib/ConfigurationMapLib.inf
 
+  #
+  # UniXNU loader libraries
+  #
+  # The loader reads the payload through the FDT handoff, so it needs the HOB
+  # with the FDT address and the FDT parser itself.
+  #
+  HobLib|MdePkg/Library/DxeHobLib/DxeHobLib.inf
+  FdtLib|MdePkg/Library/BaseFdtLib/BaseFdtLib.inf
+  UniXNULib|UniXNUPkg/Library/UniXNULib/UniXNULib.inf
+
 [Components]
   #
   # ACPI Tables
   #
   #pagani/AcpiTables.inf
+
+  #
+  # UniXNU loader
+  #
+  # Without these the platform reaches the DXE core, publishes the panel and
+  # then has nothing to boot: no menu, no payload volume, no kernel handoff.
+  # The list is the one docs/porting/uefi-firmware.md names as mandatory.
+  #
+  UniXNUPkg/Application/UniXNU/UniXNU.inf
+  UniXNUPkg/Driver/UniXNUDxe/UniXNUDxe.inf
+  UniXNUPkg/Driver/UniXNURamDiskDxe/UniXNURamDiskDxe.inf
+  DarwinBootPkg/Driver/DarwinBoot.inf
+  MdeModulePkg/Universal/Disk/DiskIoDxe/DiskIoDxe.inf
+  FatPkg/EnhancedFatDxe/Fat.inf

@@ -29,8 +29,17 @@ class CommonPlatform ():
     TargetsSupported = ("DEBUG", "RELEASE")
     Scopes = ('ace6', 'gcc_aarch64_linux', 'edk2-build')
     WorkspaceRoot = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+    # UniXNUPkg is the loader package; it lives in the UniXNU checkout's
+    # package/ directory, the same place the sheng platform reads it from.
+    # Without this entry the DSC cannot resolve UniXNUPkg/Application/UniXNU
+    # or UniXNUPkg/Driver/UniXNURamDiskDxe, so the volume builds with no boot
+    # menu and no payload volume.
+    UniXNURoot = os.environ.get("UNIXNU_ROOT", os.path.join(WorkspaceRoot, "..", "UniXNU"))
     PackagesPath = (
+        os.path.join(UniXNURoot, "package"),
+        "UniXNUPkg",
         "Platforms/OnePlus",
+        "drivers",
         "Common/Mu",
         "Common/Mu_OEM_Sample",
         "Mu_Basecore",

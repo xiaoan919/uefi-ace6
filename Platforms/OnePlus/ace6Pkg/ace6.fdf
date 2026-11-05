@@ -105,6 +105,17 @@ READ_LOCK_STATUS   = TRUE
   #  SECTION UI = "DeviceTreeBlob"
   #}
 
+  # UniXNU loader. The DSC builds these; the FDF decides what actually lands in
+  # the volume, and a module that is compiled but not listed here is simply
+  # absent at runtime. DiskIoDxe and Fat are what make the payload visible as a
+  # file system, so UniXNU can read \EFI\UniXNU\unixnu.toml from it.
+  INF UniXNUPkg/Application/UniXNU/UniXNU.inf
+  INF UniXNUPkg/Driver/UniXNUDxe/UniXNUDxe.inf
+  INF UniXNUPkg/Driver/UniXNURamDiskDxe/UniXNURamDiskDxe.inf
+  INF DarwinBootPkg/Driver/DarwinBoot.inf
+  INF MdeModulePkg/Universal/Disk/DiskIoDxe/DiskIoDxe.inf
+  INF FatPkg/EnhancedFatDxe/Fat.inf
+
   !include QcomPkg/Extra.fdf.inc
 
 [FV.FVMAIN_COMPACT]
