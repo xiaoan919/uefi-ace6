@@ -107,14 +107,16 @@ READ_LOCK_STATUS   = TRUE
 
   # UniXNU loader. The DSC builds these; the FDF decides what actually lands in
   # the volume, and a module that is compiled but not listed here is simply
-  # absent at runtime. DiskIoDxe and Fat are what make the payload visible as a
-  # file system, so UniXNU can read \EFI\UniXNU\unixnu.toml from it.
+  # absent at runtime.
+  #
+  # DiskIoDxe and Fat are deliberately not listed here: DXE.inc already pulls
+  # them in. Adding them again put two files with the same GUID in the volume
+  # and GenFv refused with "the 32th file and 94th file have the same file
+  # GUID". They are still what makes the payload visible as a file system.
   INF UniXNUPkg/Application/UniXNU/UniXNU.inf
   INF UniXNUPkg/Driver/UniXNUDxe/UniXNUDxe.inf
   INF UniXNUPkg/Driver/UniXNURamDiskDxe/UniXNURamDiskDxe.inf
   INF DarwinBootPkg/Driver/DarwinBoot.inf
-  INF MdeModulePkg/Universal/Disk/DiskIoDxe/DiskIoDxe.inf
-  INF FatPkg/EnhancedFatDxe/Fat.inf
 
   !include QcomPkg/Extra.fdf.inc
 

@@ -129,5 +129,3 @@
   UniXNUPkg/Driver/UniXNUDxe/UniXNUDxe.inf
   UniXNUPkg/Driver/UniXNURamDiskDxe/UniXNURamDiskDxe.inf
   DarwinBootPkg/Driver/DarwinBoot.inf
-  MdeModulePkg/Universal/Disk/DiskIoDxe/DiskIoDxe.inf
-  FatPkg/EnhancedFatDxe/Fat.inf
